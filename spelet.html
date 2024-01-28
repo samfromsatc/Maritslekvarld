@@ -14,10 +14,12 @@
 
 <script type="text/javascript">
 
+var worldHeight = 1000;
+
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: worldHeight,
     backgroundColor: '#ffffff',
     physics: {
         default: 'arcade',
@@ -50,7 +52,7 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/whale.png');
     this.load.image('bomb', 'assets/fox.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('dude', 'assets/spritesheet_groda.png', {frameWidth: 3000, frameHeight: 4000});
 }
 
 function create ()
@@ -73,26 +75,27 @@ function create ()
     player = this.physics.add.sprite(100, 450, 'dude');
 
     //  Player physics properties. Give the little guy a slight bounce.
+    player.setScale(1/15);
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 0 }),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: [ { key: 'dude', frame: 4 } ],
+        frames: [ { key: 'dude', frame: 0 } ],
         frameRate: 20
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 0 }),
         frameRate: 10,
         repeat: -1
     });
@@ -104,7 +107,7 @@ function create ()
     stars = this.physics.add.group({
         key: 'star',
         repeat: 3,
-        setXY: { x: 12, y: 0, stepX: 70 }
+        setXY: { x: 12, y: 0, stepX: 90 }
     });
 
     stars.children.iterate(function (child) {
@@ -181,7 +184,8 @@ function collectStar (player, star)
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        var bomb = bombs.create(x, 300, 'bomb');
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setScale(0.1);
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
