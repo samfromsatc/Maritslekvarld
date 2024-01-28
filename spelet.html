@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 10</title>
+    <title>Märits lekvärld</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
 
-var worldHeight = 1000;
+var worldHeight = 900;
 
 var config = {
     type: Phaser.AUTO,
@@ -52,6 +52,7 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/whale.png');
     this.load.image('bomb', 'assets/fox.png');
+    this.load.image('cloud', 'assets/cloud.png');
     this.load.spritesheet('dude', 'assets/spritesheet_groda.png', {frameWidth: 3000, frameHeight: 4000});
 }
 
@@ -64,12 +65,13 @@ function create ()
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    platforms.create(400, worldHeight+10, 'ground').setScale(2).refreshBody();
 
     //  Now let's create some ledges
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
+    platforms.create(600, 400, 'cloud').setScale(0.2);
+    platforms.create(50, 250, 'cloud').setScale(0.2);
+    platforms.create(750, 220, 'cloud').setScale(0.2);
+    platforms.create(100, 600, 'cloud').setScale(0.2);
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -185,7 +187,8 @@ function collectStar (player, star)
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
         var bomb = bombs.create(x, 16, 'bomb');
-        bomb.setScale(0.1);
+        bomb.setDisplaySize(30,30);
+        bomb.setSize(30,30);
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
