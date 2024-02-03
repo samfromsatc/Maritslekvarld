@@ -14,8 +14,8 @@
 
 <script type="text/javascript">
 
-var worldHeight = 900;
-var worldWidth = 20000;
+var worldWidth = 2000;
+var worldHeight = 500;
 
 var config = {
     type: Phaser.AUTO,
@@ -67,13 +67,15 @@ function create ()
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(400, worldHeight-20, 'ground').setScale().refreshBody();
+    platforms.create(400, worldHeight-20, 'ground').setDisplaySize(worldWidth, 10).refreshBody();
 
     //  Now let's create some ledges
-    platforms.create(600, 400, 'cloud').setDisplaySize(300,280).setSize(300,250);
+    platforms.create(600, 400, 'cloud').setDisplaySize(120,20).setSize(120, 15);
     //platforms.create(50, 250, 'cloud').setDisplaySize(300,280).setSize(300,250);
     //platforms.create(750, 220, 'cloud').setDisplaySize(300,280).setSize(300,250);
     //platforms.create(100, 600, 'cloud').setDisplaySize(300,280).setSize(300,250);
+
+    
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -85,7 +87,7 @@ function create ()
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
-    //this.camera.main.setBounds(0,0,worldHeight, 500);  
+    //this.camera.main.setBounds(0,0,500, worldheight);  
     //this.camera.main.startFollow(this.player);
 
     //  Our player animations, turning, walking left and walking right.
