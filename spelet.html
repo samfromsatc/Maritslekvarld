@@ -13,13 +13,13 @@
 <body>
 
 <script type="text/javascript">
-var worldWidth = 2000;
-var worldHeight = 500;
+var worldWidth = 2500;
+var worldHeight = 800;
 
 var config = {
     type: Phaser.AUTO,
-    width: worldWidth,
-    height: worldHeight,
+    width: window.innerWidth,
+    height: window.innerHeight,
     backgroundColor: '#ffffff',
     physics: {
         default: 'arcade',
@@ -60,13 +60,21 @@ function create () {
     platforms = this.physics.add.staticGroup();
 
     // Creating the ground platform
-    platforms.create(worldWidth/2, worldHeight-16, 'ground').setScale(worldWidth/800, 1).refreshBody();
+
+    const groundDisplayWidth = worldWidth;
+    const groundDisplayHeight = 32;
+
+    const ground = platforms.create(0, worldHeight - groundDisplayHeight/2, 'ground');
+
+    ground.displayWidth = groundDisplayWidth;
+    ground.displayHeight = groundDisplayHeight;
+    ground.body.updateFromGameObject();
 
     // Creating ledges
     platforms.create(600, 400, 'cloud').setScale(0.1).refreshBody();
 
     // Creating the player with physics properties
-    player = this.physics.add.sprite(100, worldHeight-50, 'dude').setScale(0.05);
+    player = this.physics.add.sprite(100, worldHeight-250, 'dude').setScale(0.05);
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
@@ -118,6 +126,9 @@ function create () {
     // Adding overlaps
     this.physics.add.overlap(player, stars, collectStar, null, this);
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+
+    this.cameras.main.setBounds(0,0,worldWidth, worldHeight);
+    this.cameras.main.startFollow(player);
 }
 
 function update () {
