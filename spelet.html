@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Märits lekvärld</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -18,8 +18,8 @@ var worldHeight = 800;
 
 var config = {
     type: Phaser.AUTO,
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: worldWidth,
+    height: worldHeight,
     backgroundColor: '#ffffff',
     physics: {
         default: 'arcade',
@@ -64,17 +64,18 @@ function create () {
     const groundDisplayWidth = worldWidth;
     const groundDisplayHeight = 32;
 
-    const ground = platforms.create(0, worldHeight - groundDisplayHeight/2, 'ground');
+    const ground = platforms.create(0, worldHeight - groundDisplayHeight, 'ground');
 
     ground.displayWidth = groundDisplayWidth;
     ground.displayHeight = groundDisplayHeight;
+    ground.setOrigin(0,1);
     ground.body.updateFromGameObject();
 
     // Creating ledges
     platforms.create(600, 400, 'cloud').setScale(0.1).refreshBody();
 
     // Creating the player with physics properties
-    player = this.physics.add.sprite(100, worldHeight-250, 'dude').setScale(0.05);
+    player = this.physics.add.sprite(100, worldHeight-100, 'dude').setScale(0.05);
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
@@ -129,6 +130,7 @@ function create () {
 
     this.cameras.main.setBounds(0,0,worldWidth, worldHeight);
     this.cameras.main.startFollow(player);
+    //this.cameras.main.followOffset.set(-config.width / 2, -config.height / 2 );
 }
 
 function update () {
@@ -149,7 +151,17 @@ function update () {
 
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-330);
+        console.log("Player jumps")
     }
+
+    if(cursors.up.isDown){
+        console.log("Up key pressed")
+    }
+
+    if(player.body.touching.down){
+        console.log("Player is on the ground")
+    }
+
 }
 
 function collectStar (player, star) {
@@ -166,11 +178,19 @@ function collectStar (player, star) {
         });
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-        var bomb = bombs.create(x, 16, 'bomb').setScale(0.1).refreshBody(); 
+
+        try{
+        var bomb = bombs.create(x, 16, 'bomb').setScale(0.05).refreshBody(); 
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
         bomb.allowGravity = false;
+
+        // Log bomb properties
+        console.log("Bomb created at x:" + x);
+        } catch(e) {
+            console.error("Error creating bomb:", e);
+        }
     }
 }
 
