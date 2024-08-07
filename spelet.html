@@ -14,12 +14,12 @@
 
 <script type="text/javascript">
 var worldWidth = 2500;
-var worldHeight = 800;
+var worldHeight = 690;
 
 var config = {
     type: Phaser.AUTO,
-    width: worldWidth,
-    height: worldHeight,
+    width: window.innerWidth,
+    height: window.innerHeight,
     backgroundColor: '#ffffff',
     physics: {
         default: 'arcade',
@@ -64,20 +64,37 @@ function create () {
     const groundDisplayWidth = worldWidth;
     const groundDisplayHeight = 32;
 
-    const ground = platforms.create(0, worldHeight - groundDisplayHeight, 'ground');
-
+    const ground = platforms.create(0, worldHeight, 'ground');
+    ground.setOrigin(0,1);
     ground.displayWidth = groundDisplayWidth;
     ground.displayHeight = groundDisplayHeight;
-    ground.setOrigin(0,1);
-    ground.body.updateFromGameObject();
+    ground.refreshBody();
 
-    // Creating ledges
-    platforms.create(600, 400, 'cloud').setScale(0.1).refreshBody();
+
+
+    // Creating clouds
+    const cloud1 = platforms.create(600, 400, 'cloud');
+    cloud1.setOrigin(0.5, 0.5);
+    cloud1.displayWidth = 100;
+    cloud1.displayHeight = 50;
+    cloud1.setSize(100, 20);
+
+    platforms.create(400, 550, 'cloud').setScale(0.1).refreshBody();
+    platforms.create(800, 250, 'cloud').setScale(0.1).refreshBody();
 
     // Creating the player with physics properties
-    player = this.physics.add.sprite(100, worldHeight-100, 'dude').setScale(0.05);
+
+    player = this.physics.add.sprite(100, worldHeight-300, 'dude');
+    
+    //
+    player.setOrigin(0.5, 0.5);
+    player.displayWidth = 75;
+    player.displayHeight = 150;
+    player.setSize(75, 150);
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+
+    player.body.setOffset(player.width/1.5, player.height/1.5);
 
     // Creating animations for the player
     this.anims.create({
@@ -118,6 +135,7 @@ function create () {
 
     // Adding score text
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    checkText = this.add.text(200, 16, 'lets see', {fontSize: '32px', fill: '#000'});
 
     // Adding colliders
     this.physics.add.collider(player, platforms);
@@ -151,15 +169,17 @@ function update () {
 
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-330);
-        console.log("Player jumps")
+        console.log("Player jumps");
     }
 
     if(cursors.up.isDown){
-        console.log("Up key pressed")
+        console.log("Up key pressed");
     }
 
     if(player.body.touching.down){
-        console.log("Player is on the ground")
+        checkText.setText('Touching ground');
+    }else{
+        checkText.setText('Not touching ground');
     }
 
 }
